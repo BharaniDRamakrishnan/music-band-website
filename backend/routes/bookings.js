@@ -1,4 +1,5 @@
 const express = require('express');
+const mongoose = require('mongoose');
 const Booking = require('../models/Booking');
 const Event = require('../models/Event');
 const { authenticateToken, requireAdmin, requireAdminOrOwner } = require('../middleware/auth');
@@ -39,20 +40,44 @@ router.post('/book', authenticateToken, async (req, res) => {
     try {
         const { eventId, ticketQuantity, specialRequests, contactInfo } = req.body;
         
-        // Validate event exists and has available tickets
+        // Validate input
+        if (!eventId || !ticketQuantity || ticketQuantity <= 0) {
+            return res.status(400).json({ error: 'Valid event ID and ticket quantity are required' });
+        }
+        
+        // Find event and check availability
         const event = await Event.findById(eventId);
         if (!event) {
             return res.status(404).json({ error: 'Event not found' });
         }
         
-        if (event.status !== 'upcoming' && event.status !== 'ongoing') {
-            return res.status(400).json({ error: 'Event is not available for booking' });
+        // Check if event is available for booking
+        if (!event.isAvailableForBooking()) {
+            return res.status(400).json({ 
+                error: event.status === 'sold out' 
+                    ? 'This event is sold out' 
+                    : 'Event is not available for booking' 
+            });
+        }
+        
+        // Check if enough tickets are available
+        if (event.seatsLeft < ticketQuantity) {
+            return res.status(400).json({ 
+                error: `Not enough tickets available. Only ${event.seatsLeft} tickets remaining.` 
+            });
         }
         
         // Check if user already booked this event
         const existingBooking = await Booking.findOne({ user: req.user._id, event: eventId });
         if (existingBooking) {
             return res.status(400).json({ error: 'You have already booked this event' });
+        }
+        
+        // Check availability before booking
+        if (event.seatsLeft < ticketQuantity) {
+            return res.status(400).json({ 
+                error: `Not enough tickets available. Only ${event.seatsLeft} tickets remaining.` 
+            });
         }
         
         // Calculate total price
@@ -73,16 +98,24 @@ router.post('/book', authenticateToken, async (req, res) => {
         
         await newBooking.save();
         
+        // Update event seatsLeft
+        event.seatsLeft -= ticketQuantity;
+        if (event.seatsLeft <= 0) {
+            event.status = 'sold out';
+        }
+        await event.save();
+        
         // Update user stats
         req.user.stats.eventsAttended += ticketQuantity;
         await req.user.save();
         
         // Populate event details for response
-        await newBooking.populate('event', 'title date location');
+        await newBooking.populate('event', 'title date location ticketPrice');
         
         res.status(201).json({
             message: 'Tickets booked successfully!',
-            booking: newBooking
+            booking: newBooking,
+            remainingTickets: event.seatsLeft
         });
         
     } catch (error) {
@@ -94,7 +127,8 @@ router.post('/book', authenticateToken, async (req, res) => {
 // Cancel a booking (user can only cancel their own)
 router.put('/cancel/:id', authenticateToken, async (req, res) => {
     try {
-        const booking = await Booking.findById(req.params.id);
+        const booking = await Booking.findById(req.params.id)
+            .populate('event', 'title seatsLeft capacity');
         
         if (!booking) {
             return res.status(404).json({ error: 'Booking not found' });
@@ -108,10 +142,27 @@ router.put('/cancel/:id', authenticateToken, async (req, res) => {
             return res.status(400).json({ error: 'Booking is already cancelled' });
         }
         
+        // Return seats to the event
+        booking.event.seatsLeft += booking.ticketQuantity;
+        if (booking.event.status === 'sold out' && booking.event.seatsLeft > 0) {
+            booking.event.status = 'upcoming';
+        }
+        await booking.event.save();
+        
+        // Update booking status
         booking.status = 'cancelled';
         await booking.save();
         
-        res.json({ message: 'Booking cancelled successfully', booking });
+        // Update user stats
+        req.user.stats.eventsAttended -= booking.ticketQuantity;
+        await req.user.save();
+        
+        res.json({ 
+            message: 'Booking cancelled successfully', 
+            booking,
+            returnedTickets: booking.ticketQuantity,
+            remainingTickets: booking.event.seatsLeft
+        });
         
     } catch (error) {
         console.error('Error cancelling booking:', error);

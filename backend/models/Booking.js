@@ -42,6 +42,10 @@ const BookingSchema = new mongoose.Schema({
     contactInfo: {
         phone: String,
         email: String
+    },
+    checkoutSessionId: {
+        type: String,
+        index: true
     }
 }, {
     timestamps: true
@@ -65,6 +69,14 @@ BookingSchema.virtual('formattedBookingDate').get(function() {
 BookingSchema.set('toJSON', { virtuals: true });
 
 module.exports = mongoose.model('Booking', BookingSchema);
+
+
+
+
+
+
+
+
 
 
 

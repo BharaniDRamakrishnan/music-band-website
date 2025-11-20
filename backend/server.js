@@ -13,8 +13,16 @@ console.log('PORT:', process.env.PORT || 'Using default (5000)');
 
 const app = express();
 
+// Log Stripe configuration status for easier debugging
+const stripeConfigured = !!(process.env.STRIPE_SECRET_KEY || process.env.STRIPE_SECRET || process.env.STRIPE_SK);
+console.log('Stripe configured:', stripeConfigured ? 'Yes' : 'No');
+
 // Middleware
 app.use(cors());
+
+// Stripe webhook requires raw body; mount raw for that path before JSON parser
+app.post('/api/payments/webhook', express.raw({ type: 'application/json' }), (req, res, next) => next());
+// JSON parser for other routes
 app.use(express.json());
 
 // MongoDB Connection
@@ -50,10 +58,14 @@ app.get('/api/health', (req, res) => {
 const authRoutes = require('./routes/auth');
 const eventRoutes = require('./routes/events');
 const bookingRoutes = require('./routes/bookings');
+const chatbotRoutes = require('./routes/chatbot');
+const paymentsRoutes = require('./routes/payments');
 
 app.use('/api/auth', authRoutes);
 app.use('/api/events', eventRoutes);
 app.use('/api/bookings', bookingRoutes);
+app.use('/api/chatbot', chatbotRoutes);
+app.use('/api/payments', paymentsRoutes);
 
 // Start server
 const PORT = process.env.PORT || 5000;
