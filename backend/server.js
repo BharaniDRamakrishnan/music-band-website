@@ -45,6 +45,10 @@ if (process.env.MONGO_URI) {
 }
 
 // Health check endpoint
+app.get("/", (req, res) => {
+  res.send("Backend running successfully on Render!");
+});
+
 app.get('/api/health', (req, res) => {
     res.json({ 
         status: 'OK', 
@@ -66,7 +70,6 @@ app.use('/api/events', eventRoutes);
 app.use('/api/bookings', bookingRoutes);
 app.use('/api/chatbot', chatbotRoutes);
 app.use('/api/payments', paymentsRoutes);
-
 // Start server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
