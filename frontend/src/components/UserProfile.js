@@ -37,7 +37,7 @@ function UserProfile({ onClose }) {
   const fetchProfile = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.get('http://localhost:5000/api/auth/profile', {
+      const response = await axios.get('https://music-band-website.onrender.com/api/auth/profile', {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       
@@ -89,7 +89,7 @@ function UserProfile({ onClose }) {
     setLoading(true);
     try {
       const token = localStorage.getItem('token');
-      await axios.put('http://localhost:5000/api/auth/profile', {
+      await axios.put('https://music-band-website.onrender.com/api/auth/profile', {
         profile,
         preferences
       }, {
@@ -125,7 +125,7 @@ function UserProfile({ onClose }) {
     setLoading(true);
     try {
       const token = localStorage.getItem('token');
-      await axios.put('http://localhost:5000/api/auth/change-password', {
+      await axios.put('https://music-band-website.onrender.com/api/auth/change-password', {
         currentPassword: passwordData.currentPassword,
         newPassword: passwordData.newPassword
       }, {

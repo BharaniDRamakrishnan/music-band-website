@@ -56,7 +56,7 @@ function EditEvent({ event, onEventUpdated, onClose }) {
         date: formData.date ? new Date(formData.date).toISOString() : undefined
       };
 
-      const response = await axios.put(`http://localhost:5000/api/events/${event._id}`,
+      const response = await axios.put(`https://music-band-website.onrender.com/api/events/${event._id}`,
         payload,
         {
           headers: {
@@ -235,6 +235,7 @@ function EditEvent({ event, onEventUpdated, onClose }) {
 }
 
 export default EditEvent;
+
 
 
 

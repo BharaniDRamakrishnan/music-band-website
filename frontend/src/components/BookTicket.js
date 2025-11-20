@@ -47,7 +47,7 @@ function BookTicket({ event, onClose, onBookingSuccess }) {
             }
 
             // Directly create booking (no payment)
-            const response = await axios.post('http://localhost:5000/api/bookings/book', {
+            const response = await axios.post('https://music-band-website.onrender.com/api/bookings/book', {
                 eventId: event._id,
                 ticketQuantity: parseInt(formData.ticketQuantity),
                 specialRequests: formData.specialRequests,

@@ -23,7 +23,7 @@ function MyBookings({ onClose }) {
                 return;
             }
 
-            const response = await axios.get('http://localhost:5000/api/bookings/my-bookings', {
+            const response = await axios.get('https://music-band-website.onrender.com/api/bookings/my-bookings', {
                 headers: { Authorization: `Bearer ${token}` }
             });
 
@@ -46,7 +46,7 @@ function MyBookings({ onClose }) {
 
         try {
             const token = localStorage.getItem('token');
-            await axios.put(`http://localhost:5000/api/bookings/cancel/${bookingId}`, {}, {
+            await axios.put(`https://music-band-website.onrender.com/api/bookings/cancel/${bookingId}`, {}, {
                 headers: { Authorization: `Bearer ${token}` }
             });
 
@@ -75,7 +75,7 @@ function MyBookings({ onClose }) {
                 return;
             }
 
-            const resp = await axios.post('http://localhost:5000/api/payments/checkout-from-booking', {
+            const resp = await axios.post('https://music-band-website.onrender.com/api/payments/checkout-from-booking', {
                 bookingId
             }, {
                 headers: { Authorization: `Bearer ${token}` }
@@ -256,18 +256,18 @@ function MyBookings({ onClose }) {
                                                 try {
                                                     const token = localStorage.getItem('token');
                                                     try {
-                                                        await axios.delete(`http://localhost:5000/api/bookings/${booking._id}`, {
+                                                        await axios.delete(`https://music-band-website.onrender.com/api/bookings/${booking._id}`, {
                                                             headers: { Authorization: `Bearer ${token}` }
                                                         });
                                                     } catch (delErr) {
                                                         try {
                                                             // Fallback to PUT if DELETE fails
-                                                            await axios.put(`http://localhost:5000/api/bookings/delete/${booking._id}`, {}, {
+                                                            await axios.put(`https://music-band-website.onrender.com/api/bookings/delete/${booking._id}`, {}, {
                                                                 headers: { Authorization: `Bearer ${token}` }
                                                             });
                                                         } catch (putErr) {
                                                             // Fallback to POST if PUT also fails
-                                                            await axios.post(`http://localhost:5000/api/bookings/${booking._id}/delete`, {}, {
+                                                            await axios.post(`https://music-band-website.onrender.com/api/bookings/${booking._id}/delete`, {}, {
                                                                 headers: { Authorization: `Bearer ${token}` }
                                                             });
                                                         }

@@ -18,7 +18,7 @@ const ChatbotWidget = () => {
     const messagesEndRef = useRef(null);
 
     // API base URL - adjust if needed
-    const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
+    const API_BASE_URL = process.env.REACT_APP_API_URL || 'https://music-band-website.onrender.com/api';
     console.log('API_BASE_URL:', API_BASE_URL);
 
     // Scroll to bottom of messages

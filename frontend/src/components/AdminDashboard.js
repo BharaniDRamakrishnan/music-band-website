@@ -30,10 +30,10 @@ function AdminDashboard({ onClose }) {
     try {
       const token = localStorage.getItem('token');
       const [eventsResponse, bookingsResponse] = await Promise.all([
-        axios.get('http://localhost:5000/api/events/admin/stats', {
+        axios.get('https://music-band-website.onrender.com', {
           headers: { 'Authorization': `Bearer ${token}` }
         }),
-        axios.get('http://localhost:5000/api/bookings/admin/stats', {
+        axios.get('https://music-band-website.onrender.com', {
           headers: { 'Authorization': `Bearer ${token}` }
         })
       ]);
@@ -51,7 +51,7 @@ function AdminDashboard({ onClose }) {
     setLoading(true);
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.get('http://localhost:5000/api/auth/users', {
+      const response = await axios.get('https://music-band-website.onrender.com', {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       setUsers(response.data);
@@ -66,7 +66,7 @@ function AdminDashboard({ onClose }) {
     setLoading(true);
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.get('http://localhost:5000/api/events/admin/all', {
+      const response = await axios.get('https://music-band-website.onrender.com', {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       setEvents(response.data);
@@ -81,7 +81,7 @@ function AdminDashboard({ onClose }) {
     setLoading(true);
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.get('http://localhost:5000/api/bookings/admin/all', {
+      const response = await axios.get('https://music-band-website.onrender.com', {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       setBookings(response.data);
@@ -95,7 +95,7 @@ function AdminDashboard({ onClose }) {
   const updateUserRole = async (userId, newRole) => {
     try {
       const token = localStorage.getItem('token');
-      await axios.put(`http://localhost:5000/api/auth/users/${userId}/role`, 
+      await axios.put(`https://music-band-website.onrender.com/${userId}/role`, 
         { role: newRole },
         { headers: { 'Authorization': `Bearer ${token}` } }
       );
@@ -120,7 +120,7 @@ function AdminDashboard({ onClose }) {
 
     try {
       const token = localStorage.getItem('token');
-      await axios.delete(`http://localhost:5000/api/auth/users/${userId}`, {
+      await axios.delete(`https://music-band-website.onrender.com/${userId}`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       
@@ -140,7 +140,7 @@ function AdminDashboard({ onClose }) {
   const updateBookingStatus = async (bookingId, newStatus) => {
     try {
       const token = localStorage.getItem('token');
-      await axios.put(`http://localhost:5000/api/bookings/admin/${bookingId}/status`, 
+      await axios.put(`https://music-band-website.onrender.com${bookingId}/status`, 
         { status: newStatus },
         { headers: { 'Authorization': `Bearer ${token}` } }
       );
@@ -165,7 +165,7 @@ function AdminDashboard({ onClose }) {
 
     try {
       const token = localStorage.getItem('token');
-      await axios.delete(`http://localhost:5000/api/bookings/admin/${bookingId}`, {
+      await axios.delete(`https://music-band-website.onrender.com${bookingId}`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       
@@ -189,7 +189,7 @@ function AdminDashboard({ onClose }) {
 
     try {
       const token = localStorage.getItem('token');
-      await axios.delete(`http://localhost:5000/api/events/admin/${eventId}`, {
+      await axios.delete(`https://music-band-website.onrender.com${eventId}`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       
@@ -210,7 +210,7 @@ function AdminDashboard({ onClose }) {
     setLoading(true);
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.get('http://localhost:5000/api/events/admin/availability/overview', {
+      const response = await axios.get('https://music-band-website.onrender.com', {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       setAvailabilityStats(response.data);

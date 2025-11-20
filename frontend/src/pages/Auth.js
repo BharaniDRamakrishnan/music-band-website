@@ -39,7 +39,7 @@ function Auth() {
         ? { email: formData.email, password: formData.password }
         : { username: formData.username, email: formData.email, password: formData.password };
 
-      const response = await axios.post(`http://localhost:5000${endpoint}`, payload);
+      const response = await axios.post(`https://music-band-website.onrender.com${endpoint}`, payload);
       
       if (isLogin) {
         // Store token and user data in localStorage

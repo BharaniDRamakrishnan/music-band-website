@@ -50,7 +50,7 @@ function Events() {
   const fetchEvents = async () => {
     try {
       console.log('Fetching events from API...');
-      const response = await axios.get('http://localhost:5000/api/events');
+      const response = await axios.get('https://music-band-website.onrender.com/api/events');
       console.log('Events received:', response.data);
       setEvents(response.data);
     } catch (error) {
@@ -79,7 +79,7 @@ function Events() {
     if (window.confirm('Are you sure you want to delete this event?')) {
       try {
         const token = localStorage.getItem('token');
-        await axios.delete(`http://localhost:5000/api/events/${eventId}`, {
+        await axios.delete(`https://music-band-website.onrender.com/api/events/${eventId}`, {
           headers: {
             'Authorization': `Bearer ${token}`
           }
